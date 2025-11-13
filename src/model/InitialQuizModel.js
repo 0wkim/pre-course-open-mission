@@ -15,7 +15,7 @@ export default class InitialQuizModel {
         const randomSyllable = this.#getRandomSyllable();
 
         try {
-            this.#items = await fetchWords(randomSyllable);
+            this.#items = await fetchWords(randomSyllable, "start");
 
             if (this.#items.length === 0) {
                 return await this.#getRandomWord();
@@ -84,12 +84,27 @@ export default class InitialQuizModel {
     // 정답
     static Success(result) {
         Console.print("\n정답입니다🥳\n");
-        Console.print("<단어 뜻 풀이>");
+        // Console.print("<단어 뜻 풀이>");
 
-        const pos = result[0].sense[0].pos;
-        const definition = result[0].sense[0].definition;
+        // // 기본 단어 먼저 선택 
+        // let targetItem = result.find(item => 
+        //     item.sense.some(s => s.cat === "")
+        // );
 
-        Console.print(`품사 : ${pos} \n정의: ${definition}`);
+        // if (!targetItem) {
+        //     targetItem = result[0];
+        // }
+
+        // let targetSense = targetItem.sense.find(s => s.cat === "");
+
+        // if (!targetSense) {
+        //     targetSense = targetItem.sense[0];
+        // }
+
+        // const pos = targetSense.pos;
+        // const definition = targetSense.definition;
+
+        // Console.print(`품사 : ${pos} \n정의: ${definition}`);
     }
 
     // 실패, 오답
@@ -101,6 +116,6 @@ export default class InitialQuizModel {
         const pos = this.#randomItem.sense[0].pos;
         const definition = this.#randomItem.sense[0].definition;
 
-        Console.print(`단어: ${word} \n품사 : ${pos} \n정의: ${definition}`);
+        Console.print(`단어 : ${word} \n품사 : ${pos} \n정의 : ${definition}`);
     }
 }
