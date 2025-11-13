@@ -3,6 +3,7 @@ import readline from "readline";
 
 export default class InitialQuizModel {
     static #deleteHypenRandomWord = "";
+    static #items = [];
     
     static #getRandomSyllable() {
         const code = Math.floor(Math.random() * (0xD742 - 0xAC00 + 1)) + 0xAC00;
@@ -10,28 +11,17 @@ export default class InitialQuizModel {
     }
 
     static async #getRandomWord() {
-        const API_KEY = "D7AC672C2129A1C432C40B73ECF12CEE";
-        const URL = "https://opendict.korean.go.kr/api/search";
-
         const randomSyllable = this.#getRandomSyllable();
-        const API_URL = `${URL}?key=${API_KEY}&q=${encodeURIComponent(randomSyllable)}&req_type=json&part=word&advanced=y&method=start&type1=word&pos=1,5,6`;
-    
+
         try {
-           const response = await fetch(API_URL);
-            const data = await response.json();
+            this.#items = await fetchWords(randomSyllable);
 
-            let items = [];
-
-            if (data.channel && data.channel.item) {
-                items = data.channel.item;
-            }
-
-            if (items.length === 0) {
+            if (this.#items.length === 0) {
                 return await this.#getRandomWord();
             }
 
-            const randomIndex = Math.floor(Math.random() * items.length);
-            const randomItem = items[randomIndex];
+            const randomIndex = Math.floor(Math.random() * this.#items.length);
+            const randomItem = this.#items[randomIndex];
 
             const randomWord = randomItem.word;
 
@@ -67,8 +57,8 @@ export default class InitialQuizModel {
         return initialWord;
     }
 
-    static async checkAnswer(word) {
-        const checkAnswer = await fetchWords(word);
-        return checkAnswer;
+    static async checkAnswer(inputWord) {
+        const result = await fetchWords(inputWord);
+        return result;
     }
 }
