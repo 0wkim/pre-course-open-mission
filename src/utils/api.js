@@ -21,8 +21,8 @@ export async function fetchWords(query, pos="1,2,3,5,6,8,15,16,17,18,21") {
 
         // 단어만 추출
         const words = items.map(item => [item.word, item.sense[0].pos, item.sense[0].definition]);
-        // console.log("단어 수: ", words.length);
-        // console.log(words);
+        console.log("단어 수: ", words.length);
+        console.log(words);
 
         return words;
     } catch (error) {
