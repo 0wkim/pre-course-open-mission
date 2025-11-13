@@ -83,7 +83,7 @@ export default class InitialQuizModel {
 
     // 정답
     static Success(result) {
-        Console.print("\n정답입니다🥳\n");
+        Console.print("\n\n정답입니다🥳\n");
         Console.print("<단어 뜻 풀이>");
 
         // 기본 단어 먼저 선택 
@@ -115,7 +115,7 @@ export default class InitialQuizModel {
 
     // 실패, 오답
     static Fail() {
-        Console.print("\n실패했어요😭\n");
+        Console.print("\n\n실패했어요😭\n");
         Console.print("이런 단어도 있어요!");
 
         const word = this.#randomItem.word;

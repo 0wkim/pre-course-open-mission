@@ -2,7 +2,7 @@ const API_KEY = "D7AC672C2129A1C432C40B73ECF12CEE";
 const URL = "https://opendict.korean.go.kr/api/search";
 
 export async function fetchWords(query, method="exact") {
-    const API_URL = `${URL}?key=${API_KEY}&q=${encodeURIComponent(query)}&req_type=json&part=word&advanced=y&method=${method}&type1=word&type3=general,ancient&pos=1,5,6`;
+    const API_URL = `${URL}?key=${API_KEY}&q=${encodeURIComponent(query)}&req_type=json&part=word&advanced=y&method=${method}&type1=word&type3=general&pos=1,5,6`;
 
     try {
         const response = await fetch(API_URL);
