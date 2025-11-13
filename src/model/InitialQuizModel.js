@@ -1,9 +1,9 @@
 import { fetchWords } from "../utils/api.js";
-import readline from "readline";
 
 export default class InitialQuizModel {
     static #deleteHypenRandomWord = "";
     static #items = [];
+    static #randomItem;
     
     static #getRandomSyllable() {
         const code = Math.floor(Math.random() * (0xD742 - 0xAC00 + 1)) + 0xAC00;
@@ -21,9 +21,9 @@ export default class InitialQuizModel {
             }
 
             const randomIndex = Math.floor(Math.random() * this.#items.length);
-            const randomItem = this.#items[randomIndex];
+            this.#randomItem = this.#items[randomIndex];
 
-            const randomWord = randomItem.word;
+            const randomWord = this.#randomItem.word;
 
             this.#deleteHypenRandomWord = randomWord.replace("-", "");
 
@@ -57,6 +57,17 @@ export default class InitialQuizModel {
         return initialWord;
     }
 
+    static getFirstLetterHint() {
+        const firstLetter = this.#deleteHypenRandomWord[0];
+        return firstLetter;
+    }
+
+    static getDefinitionHint() {
+        const definition = this.#randomItem.sense[0].definition;
+        return definition;
+    }
+
+    // view랑 어떻게 분리할지? 
     static async checkAnswer(inputWord) {
         const result = await fetchWords(inputWord);
         return result;
