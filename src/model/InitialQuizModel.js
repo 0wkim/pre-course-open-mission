@@ -1,4 +1,5 @@
 import { fetchWords } from "../utils/api.js";
+import { Console } from "@woowacourse/mission-utils";
 
 export default class InitialQuizModel {
     static #deleteHypenRandomWord = "";
@@ -6,7 +7,7 @@ export default class InitialQuizModel {
     static #randomItem;
     
     static #getRandomSyllable() {
-        const code = Math.floor(Math.random() * (0xD742 - 0xAC00 + 1)) + 0xAC00;
+        const code = Math.floor(Math.random() * (0xD7A3 - 0xAC00 + 1)) + 0xAC00;
         return String.fromCharCode(code);
     }
 
@@ -70,6 +71,36 @@ export default class InitialQuizModel {
     // view랑 어떻게 분리할지? 
     static async checkAnswer(inputWord) {
         const result = await fetchWords(inputWord);
-        return result;
+
+        if (result && result.length > 0) {
+            this.Success(result);
+        }
+
+        if (!result || result.length === 0) {
+            this.Fail();
+        }
+    }
+
+    // 정답
+    static Success(result) {
+        Console.print("\n정답입니다🥳\n");
+        Console.print("<단어 뜻 풀이>");
+
+        const pos = result[0].sense[0].pos;
+        const definition = result[0].sense[0].definition;
+
+        Console.print(`품사 : ${pos} \n정의: ${definition}`);
+    }
+
+    // 실패, 오답
+    static Fail() {
+        Console.print("\n실패했어요😭\n");
+        Console.print("이런 단어도 있어요!");
+
+        const word = this.#randomItem.word;
+        const pos = this.#randomItem.sense[0].pos;
+        const definition = this.#randomItem.sense[0].definition;
+
+        Console.print(`단어: ${word} \n품사 : ${pos} \n정의: ${definition}`);
     }
 }
