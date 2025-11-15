@@ -1,20 +1,49 @@
-import { Console } from "@woowacourse/mission-utils";
+import readline from "readline";
+
+// models
 import InitialQuizModel from "../model/InitialQuizModel.js";
-import { inputTimer, startLoadingMessage } from "../utils/loading.js";
+
+// views
+import InitialQuizView from "../view/StartQuizView.js";
+import RunningQuizView from "../view/RunningQuizView.js";
+import FinishQuizView from "../view/FinishQuizView.js";
+
+//service
+import RunningService from "../service/RunningService.js";
 
 export default class InitialQuizController {
     async run() {
-        const loadingTimer = startLoadingMessage();
+        // start
+        const findInitialTimer = InitialQuizView.findingInitialMessage();
 
         const randomWord = await InitialQuizModel.chooseTwoCharWord();
         const randomInitial = InitialQuizModel.getRandomWordInitial(randomWord);
 
-        clearInterval(loadingTimer);
-        process.stdout.write("\r제시어 선정이 완료되었습니다!                    \n\n");
+        InitialQuizView.completeFindingMessage(findInitialTimer);
 
-        Console.print(`제시어 : ${randomInitial}\n`);
-    
-        const inputWord = await inputTimer();
-        InitialQuizModel.checkAnswer(inputWord);
+        // running
+        InitialQuizView.showInitial(randomInitial);
+
+        const readLine = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+        });
+
+        const userInputWord = await new Promise((resolve) => {
+            RunningService.running(readLine, (answer, timers) => {
+                RunningService.clearAllTimers(timers);
+                readLine.close();
+                resolve(answer);
+            });
+        });
+
+        // end
+        const result = await InitialQuizModel.checkAnswer(userInputWord);
+        const randomWordInfo = InitialQuizModel.getWordInfo();
+        
+        if (Array.isArray(result) && result.length > 0) {
+            return FinishQuizView.showCorrect(result);
+        }
+        return FinishQuizView.showIncorrect(randomWordInfo);
     }
 }

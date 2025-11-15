@@ -68,60 +68,17 @@ export default class InitialQuizModel {
         return definition;
     }
 
-    // view랑 어떻게 분리할지? 
     static async checkAnswer(inputWord) {
         const result = await fetchWords(inputWord);
 
-        if (result && result.length > 0) {
-            this.Success(result);
-        }
-
-        if (!result || result.length === 0) {
-            this.Fail();
-        }
+        return result;
     }
 
-    // 정답
-    static Success(result) {
-        Console.print("\n\n정답입니다🥳\n");
-        Console.print("<단어 뜻 풀이>");
-
-        // 기본 단어 먼저 선택 
-        let targetItem = result.find(item => 
-            item.sense.some(s => !s.cat || s.cat.trim() === "")
-        );
-
-        if (!targetItem) {
-            targetItem = result[0];
-        }
-
-        let targetSense = targetItem.sense.find(s => s.cat === "");
-
-        if (!targetSense) {
-            targetSense = targetItem.sense[0];
-        }
-
-        let cat = targetSense.cat;
-
-        if (!cat || cat.trim() === "") {
-            cat = "일반"
-        }
-
-        const pos = targetSense.pos;
-        const definition = targetSense.definition;
-
-        Console.print(`품사 : ${pos} \n정의 : ${definition} \n범주 : ${cat}`);
-    }
-
-    // 실패, 오답
-    static Fail() {
-        Console.print("\n\n실패했어요😭\n");
-        Console.print("이런 단어도 있어요!");
-
+    static getWordInfo() {
         const word = this.#randomItem.word;
         const pos = this.#randomItem.sense[0].pos;
         const definition = this.#randomItem.sense[0].definition;
 
-        Console.print(`단어 : ${word} \n품사 : ${pos} \n정의 : ${definition}`);
+        return {word, pos, definition};
     }
-}
+}    

@@ -2,22 +2,6 @@ import readline from "readline";
 import InitialQuizModel from "../model/InitialQuizModel.js";
 import { Console } from "@woowacourse/mission-utils";
 
-export function startLoadingMessage() {
-    const messages = [
-        "제시어를 선정중입니다! 조금만 더 기다려 주세요",
-        "제시어를 선정중입니다! 조금만 더 기다려 주세요.",
-        "제시어를 선정중입니다! 조금만 더 기다려 주세요..",
-        "제시어를 선정중입니다! 조금만 더 기다려 주세요...",
-    ];
-    let index = 0;
-
-    const timer = setInterval(() => {
-        process.stdout.write("\r" + messages[index % messages.length] + "   ");
-        index ++;
-    }, 500); // 0.5마다 변경
-
-    return timer;
-}
 
 export function inputTimer() {
     return new Promise((resolve) => {
@@ -31,14 +15,7 @@ export function inputTimer() {
 
         // 고정 레이아웃 (추후 UI를 페이지로 분리하는 것이 좋을 듯)
         process.stdout.write(`30초 안에 정답을 입력해주세요! (${time})`);
-        process.stdout.write("\n");
-        process.stdout.write("\n");
-        process.stdout.write("\n");
-        process.stdout.write("\n");
-        process.stdout.write("\n");
-        process.stdout.write("\n");
-        process.stdout.write("\n");
-        process.stdout.write("\n");
+        process.stdout.write("\n\n\n\n\n\n\n\n");
 
         readLine.setPrompt("답 : ");
         readLine.prompt();
