@@ -65,7 +65,9 @@ export default class InitialQuizModel {
 
     static getDefinitionHint() {
         const definition = this.#randomItem.sense[0].definition;
-        return definition;
+        // 정규식으로 문자열 안 태그 제거 
+        const cleanDefinition = definition.replace(/<[^>]+>/g, "");
+        return cleanDefinition;
     }
 
     static async checkAnswer(inputWord) {
@@ -78,7 +80,9 @@ export default class InitialQuizModel {
         const word = this.#randomItem.word;
         const pos = this.#randomItem.sense[0].pos;
         const definition = this.#randomItem.sense[0].definition;
+        // 정규식으로 문자열 안 태그 제거 
+        const cleanDefinition = definition.replace(/<[^>]+>/g, "");
 
-        return {word, pos, definition};
+        return {word, pos, cleanDefinition};
     }
 }    

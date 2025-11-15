@@ -1,18 +1,15 @@
 import { oneTimeTimer, iterateTimer } from "../utils/timer.js";
 import InitialQuizModel from "../model/InitialQuizModel.js";
-import RunningQuizView from "../view/RunningQuizView.js";
 
 export default class RunningService {
-    static running(readLine, onFinish) {
+    static running(readLine, callback) {
         const state = {
             time: 30,
             answerArrived: false,
             readLine,
-            onFinish,
+            callback,
             timers: {},
         };
-
-        RunningQuizView.inputLayout(readLine, state.time);
 
         state.timers.countdown = this.#countdownTime(state);
         state.timers.hint1 = this.#firstHint(state);
@@ -40,12 +37,13 @@ export default class RunningService {
             }
 
             state.time--;
+
+            state.callback("updateTime", {time: state.time});
+
             if (state.time < 0) {
                 state.answerArrived = true;
-                return state.onFinish(null, state.timers);
+                return state.callback("finish", {answer: null, timers: state.timers});
             }
-
-            RunningQuizView.updateTimer(state.time, state.readLine);
         });
     }
 
@@ -56,7 +54,7 @@ export default class RunningService {
             }
 
             const hint1 = InitialQuizModel.getFirstLetterHint();
-            RunningQuizView.showFirstHint(hint1, state.readLine);
+            state.callback("showHint1", {hint1});
         });
     } 
 
@@ -67,7 +65,7 @@ export default class RunningService {
             }
 
             const hint2 = InitialQuizModel.getDefinitionHint();
-            RunningQuizView.showSecondHint(hint2, state.readLine);
+            state.callback("showHint2", {hint2});
         });
     } 
 
@@ -78,8 +76,7 @@ export default class RunningService {
             }
 
             state.answerArrived = true;
-
-            return state.onFinish(null, state.timers);
+            state.callback("finish", {answer: null, timers: state.timers});
         });
     } 
 
@@ -91,7 +88,7 @@ export default class RunningService {
 
             state.answerArrived = true;
 
-            return state.onFinish(answer.trim(), state.timers);
+            state.callback("finish", {answer: answer.trim(), timers: state.timers});
         });
     }
 }

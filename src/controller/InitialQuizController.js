@@ -29,11 +29,18 @@ export default class InitialQuizController {
             output: process.stdout,
         });
 
+        RunningQuizView.inputLayout(readLine, 30);
+
         const userInputWord = await new Promise((resolve) => {
-            RunningService.running(readLine, (answer, timers) => {
-                RunningService.clearAllTimers(timers);
-                readLine.close();
-                resolve(answer);
+            RunningService.running(readLine, (event, payload) => {
+                if (event == "updateTime") RunningQuizView.updateTimer(payload.time, readLine);
+                if (event == "showHint1") RunningQuizView.showFirstHint(payload.hint1, readLine);
+                if (event == "showHint2") RunningQuizView.showSecondHint(payload.hint2, readLine);
+                if (event == "finish") {
+                    RunningService.clearAllTimers(payload.timers);
+                    readLine.close();
+                    resolve(payload.answer);
+                }
             });
         });
 

@@ -36,6 +36,6 @@ export default class FinishQuizView {
         Console.print("\n\n실패했어요😭\n");
         Console.print("이런 단어도 있어요!");
 
-        Console.print(`단어 : ${info.word} \n품사 : ${info.pos} \n정의 : ${info.definition}`);
+        Console.print(`단어 : ${info.word} \n품사 : ${info.pos} \n정의 : ${info.cleanDefinition}`);
     }
 }
