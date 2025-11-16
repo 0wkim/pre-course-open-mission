@@ -1,4 +1,4 @@
-export function checkCategory(targetItem) {
+export function checkCategory(targetItem, result) {
     if (!targetItem) {
         targetItem = result[0];
     }

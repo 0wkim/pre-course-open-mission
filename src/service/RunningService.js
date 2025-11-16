@@ -86,8 +86,15 @@ export default class RunningService {
                 return;
             }
 
-            state.answerArrived = true;
+            if ((answer.trim()).length === 0) {
+                state.callback("retry", {
+                    message: "아무것도 입력하지 않았습니다. 다시 입력해주세요."
+                });
+                state.readLine.prompt(true);
+                return;
+            }
 
+            state.answerArrived = true;
             state.callback("finish", {answer: answer.trim(), timers: state.timers});
         });
     }

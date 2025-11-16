@@ -16,6 +16,11 @@ export default class RunningQuizView {
         readLine.prompt(true);
     }
 
+    static showRetryMessage(message, readLine) {
+        process.stdout.write(`\n${message}\n`);
+        readLine.prompt(true);
+    }
+
     static updateTimer(time, readLine) {
         this.#rewriteLine(-8, `30초 안에 정답을 입력해주세요! (${time})`, readLine);
     }

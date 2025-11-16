@@ -1,5 +1,7 @@
 import { fetchWords } from "../utils/api.js";
 import { deleteTagInString } from "../utils/regExp.js";
+import { findTimeoutValidator } from "../validation/validateWordFindTimeout.js";
+import { ERROR_MESSAGES } from "../constants/ErrorMessages.js";
 
 export default class InitialQuizModel {
     static #deleteHypenRandomWord = "";
@@ -15,29 +17,35 @@ export default class InitialQuizModel {
     // 추출한 음절로 시작하는 단어를 API에서 가져오기
     // 만약 해당 음절의 단어가 없다면, 다시 음절 추출 
     static async #getRandomWord() {
-        const randomSyllable = this.#getRandomSyllable();
+        while (true) {
+            const randomSyllable = this.#getRandomSyllable();
+            try {
+                this.#items = await fetchWords(randomSyllable, "start");
+                if (this.#items.length === 0) return await this.#getRandomWord();
 
-        try {
-            this.#items = await fetchWords(randomSyllable, "start");
-            if (this.#items.length === 0) return await this.#getRandomWord();
+                // 해당 음절로 시작하는 단어가 여러개이면, 랜덤한 인덱스로 한개 선택
+                const randomIndex = Math.floor(Math.random() * this.#items.length);
+                this.#randomItem = this.#items[randomIndex];
+                const randomWord = this.#randomItem.word;
 
-            // 해당 음절로 시작하는 단어가 여러개이면, 랜덤한 인덱스로 한개 선택
-            const randomIndex = Math.floor(Math.random() * this.#items.length);
-            this.#randomItem = this.#items[randomIndex];
-            const randomWord = this.#randomItem.word;
-
-            this.#deleteHypenRandomWord = randomWord.replace("-", "");
-            return this.#deleteHypenRandomWord;
-        } catch (error) {
-            return await this.#getRandomWord();
+                this.#deleteHypenRandomWord = randomWord.replace("-", "");
+                return this.#deleteHypenRandomWord;
+            } catch (error) {
+                continue;
+            }
         }
     }
 
     static async chooseTwoCharWord() {
+        const validator = findTimeoutValidator();
         let word = this.#deleteHypenRandomWord;
 
         // 두 글자 단어만 허용 
         while (!(word && word.length === 2)) {
+            if (validator.isTimeout()) {
+                console.warn(ERROR_MESSAGES.ERROR_TIMEOUT_THREE_MIN);
+                return await this.chooseTwoCharWord();
+            }
             word = await this.#getRandomWord();
         }
         return word;

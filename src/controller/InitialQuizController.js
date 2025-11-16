@@ -48,6 +48,7 @@ export default class InitialQuizController {
     }
 
     #handleRunningEvent(event, payload, readLine, resolve) {
+        if (event == "retry") RunningQuizView.showRetryMessage(payload.message, readLine);
         if (event == "updateTime") RunningQuizView.updateTimer(payload.time, readLine);
         if (event == "showHint1") RunningQuizView.showFirstHint(payload.hint1, readLine);
         if (event == "showHint2") RunningQuizView.showSecondHint(payload.hint2, readLine);

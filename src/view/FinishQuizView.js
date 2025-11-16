@@ -11,7 +11,7 @@ export default class FinishQuizView {
             item.sense.some(s => !s.cat || s.cat.trim() === "")
         );
 
-        let targetSense = checkCategory(targetItem);
+        let targetSense = checkCategory(targetItem, result);
 
         const cat = targetSense.cat;
         const pos = targetSense.pos;
