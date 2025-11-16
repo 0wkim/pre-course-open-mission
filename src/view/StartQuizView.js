@@ -1,12 +1,13 @@
 import { Console } from "@woowacourse/mission-utils";
+import { FINDING_INITIAL } from "../constants/quizMessages.js";
 
 export default class InitialQuizView {
     static findingInitialMessage() {
         const messages = [
-            "제시어를 선정중입니다! 조금만 더 기다려 주세요",
-            "제시어를 선정중입니다! 조금만 더 기다려 주세요.",
-            "제시어를 선정중입니다! 조금만 더 기다려 주세요..",
-            "제시어를 선정중입니다! 조금만 더 기다려 주세요...",
+            FINDING_INITIAL.NO_DOT,
+            FINDING_INITIAL.ONE_DOT,
+            FINDING_INITIAL.TWO_DOT,
+            FINDING_INITIAL.THREE_DOT,
         ];
         let index = 0;
 

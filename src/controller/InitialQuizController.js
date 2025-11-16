@@ -13,7 +13,12 @@ import RunningService from "../service/RunningService.js";
 
 export default class InitialQuizController {
     async run() {
-        // start
+        const randomInitial = await this.#startPhase();
+        const userInputWord = await this.#runningPhase(randomInitial);
+        await this.#endPhase(userInputWord);
+    }
+
+    async #startPhase() {
         const findInitialTimer = InitialQuizView.findingInitialMessage();
 
         const randomWord = await InitialQuizModel.chooseTwoCharWord();
@@ -21,7 +26,10 @@ export default class InitialQuizController {
 
         InitialQuizView.completeFindingMessage(findInitialTimer);
 
-        // running
+        return randomInitial;
+    }
+
+    async #runningPhase(randomInitial) {
         InitialQuizView.showInitial(randomInitial);
 
         const readLine = readline.createInterface({
@@ -33,18 +41,24 @@ export default class InitialQuizController {
 
         const userInputWord = await new Promise((resolve) => {
             RunningService.running(readLine, (event, payload) => {
-                if (event == "updateTime") RunningQuizView.updateTimer(payload.time, readLine);
-                if (event == "showHint1") RunningQuizView.showFirstHint(payload.hint1, readLine);
-                if (event == "showHint2") RunningQuizView.showSecondHint(payload.hint2, readLine);
-                if (event == "finish") {
-                    RunningService.clearAllTimers(payload.timers);
-                    readLine.close();
-                    resolve(payload.answer);
-                }
+                this.#handleRunningEvent(event, payload, readLine, resolve);
             });
         });
+        return userInputWord;
+    }
 
-        // end
+    #handleRunningEvent(event, payload, readLine, resolve) {
+        if (event == "updateTime") RunningQuizView.updateTimer(payload.time, readLine);
+        if (event == "showHint1") RunningQuizView.showFirstHint(payload.hint1, readLine);
+        if (event == "showHint2") RunningQuizView.showSecondHint(payload.hint2, readLine);
+        if (event == "finish") {
+            RunningService.clearAllTimers(payload.timers);
+            readLine.close();
+            resolve(payload.answer);
+        }
+    }
+
+    async #endPhase(userInputWord) {
         const result = await InitialQuizModel.checkAnswer(userInputWord);
         const randomWordInfo = InitialQuizModel.getWordInfo();
         

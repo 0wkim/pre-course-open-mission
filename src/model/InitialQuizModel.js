@@ -1,33 +1,32 @@
 import { fetchWords } from "../utils/api.js";
-import { Console } from "@woowacourse/mission-utils";
+import { deleteTagInString } from "../utils/regExp.js";
 
 export default class InitialQuizModel {
     static #deleteHypenRandomWord = "";
     static #items = [];
     static #randomItem;
     
+    // 모든 한글 조합 중, 랜덤한 음절 추출 
     static #getRandomSyllable() {
         const code = Math.floor(Math.random() * (0xD7A3 - 0xAC00 + 1)) + 0xAC00;
         return String.fromCharCode(code);
     }
 
+    // 추출한 음절로 시작하는 단어를 API에서 가져오기
+    // 만약 해당 음절의 단어가 없다면, 다시 음절 추출 
     static async #getRandomWord() {
         const randomSyllable = this.#getRandomSyllable();
 
         try {
             this.#items = await fetchWords(randomSyllable, "start");
+            if (this.#items.length === 0) return await this.#getRandomWord();
 
-            if (this.#items.length === 0) {
-                return await this.#getRandomWord();
-            }
-
+            // 해당 음절로 시작하는 단어가 여러개이면, 랜덤한 인덱스로 한개 선택
             const randomIndex = Math.floor(Math.random() * this.#items.length);
             this.#randomItem = this.#items[randomIndex];
-
             const randomWord = this.#randomItem.word;
 
             this.#deleteHypenRandomWord = randomWord.replace("-", "");
-
             return this.#deleteHypenRandomWord;
         } catch (error) {
             return await this.#getRandomWord();
@@ -37,10 +36,10 @@ export default class InitialQuizModel {
     static async chooseTwoCharWord() {
         let word = this.#deleteHypenRandomWord;
 
+        // 두 글자 단어만 허용 
         while (!(word && word.length === 2)) {
             word = await this.#getRandomWord();
         }
-
         return word;
     }
 
@@ -54,7 +53,6 @@ export default class InitialQuizModel {
                 initialWord += String.fromCharCode(index + 4352);
             }
         }
-
         return initialWord;
     }
 
@@ -66,13 +64,12 @@ export default class InitialQuizModel {
     static getDefinitionHint() {
         const definition = this.#randomItem.sense[0].definition;
         // 정규식으로 문자열 안 태그 제거 
-        const cleanDefinition = definition.replace(/<[^>]+>/g, "");
+        const cleanDefinition = deleteTagInString(definition);
         return cleanDefinition;
     }
 
     static async checkAnswer(inputWord) {
         const result = await fetchWords(inputWord);
-
         return result;
     }
 
@@ -81,7 +78,7 @@ export default class InitialQuizModel {
         const pos = this.#randomItem.sense[0].pos;
         const definition = this.#randomItem.sense[0].definition;
         // 정규식으로 문자열 안 태그 제거 
-        const cleanDefinition = definition.replace(/<[^>]+>/g, "");
+        const cleanDefinition = deleteTagInString(definition);
 
         return {word, pos, cleanDefinition};
     }
