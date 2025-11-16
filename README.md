@@ -51,6 +51,7 @@
 src
 ├── constants/             
 │   ├── apiConstants.js
+|   ├── ErrorMessages.js
 │   └── quizMessages.js
 │
 ├── controller/              
@@ -67,6 +68,9 @@ src
 │   ├── checkCategory.js
 │   ├── regExp.js
 │   └── timer.js
+│
+├── validation/           
+│   └── validateWordFindTimeout.js
 │
 └── view/                   
     ├── FinishQuizView.js
