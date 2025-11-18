@@ -2,16 +2,16 @@ import { fetchWords } from "../utils/api.js";
 import { decodeTagInString } from "../utils/regExp.js";
 import { findTimeoutValidator } from "../validation/validateWordFindTimeout.js";
 import { ERROR_MESSAGES } from "../constants/ErrorMessages.js";
+import { randomHangulSyllable } from "../utils/randomHangulSyllable.js";
 
 export default class InitialQuizModel {
     static #randomWord = "";
     static #items = [];
-    static #randomItem;
+    static #randomItem = null;
     
     // 모든 한글 조합 중, 랜덤한 음절 추출 
     static #getRandomSyllable() {
-        const code = Math.floor(Math.random() * (0xD7A3 - 0xAC00 + 1)) + 0xAC00;
-        return String.fromCharCode(code);
+        return randomHangulSyllable();
     }
 
     // 추출한 음절로 시작하는 단어를 API에서 가져오기
@@ -38,13 +38,28 @@ export default class InitialQuizModel {
 
     static async chooseTwoCharWord() {
         const validator = findTimeoutValidator();
+        
+        while (true) {
+            const word = await this.#tryGetTwoCharWord(validator);
+
+            if (word) {
+                return word;
+            }
+
+            this.#randomWord = "";
+            this.#randomItem = null;
+            this.#items = [];
+        }
+    }
+
+    static async #tryGetTwoCharWord(validator) {
         let word = this.#randomWord;
 
-        // 두 글자 단어만 허용 
+         // 두 글자 단어만 허용 
         while (!(word && word.length === 2)) {
             if (validator.isTimeout()) {
                 console.warn(ERROR_MESSAGES.ERROR_TIMEOUT_THREE_MIN);
-                return await this.chooseTwoCharWord();
+                return null;
             }
             word = await this.#getRandomWord();
         }
@@ -90,5 +105,12 @@ export default class InitialQuizModel {
         const cleanDefinition = decodeTagInString(definition);
 
         return {word, pos, cleanDefinition};
+    }
+
+    // 테스트코드에 사용
+    static __resetForTest() {
+        this.#items = [];
+        this.#randomWord = "";
+        this.#randomItem = null;
     }
 }    
