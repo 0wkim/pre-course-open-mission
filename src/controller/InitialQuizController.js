@@ -1,13 +1,10 @@
 import readline from "readline";
-
 // models
 import InitialQuizModel from "../model/InitialQuizModel.js";
-
 // views
 import InitialQuizView from "../view/StartQuizView.js";
 import RunningQuizView from "../view/RunningQuizView.js";
 import FinishQuizView from "../view/FinishQuizView.js";
-
 //service
 import RunningService from "../service/RunningService.js";
 

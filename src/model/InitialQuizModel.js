@@ -1,5 +1,5 @@
 import { fetchWords } from "../utils/api.js";
-import { deleteTagInString } from "../utils/regExp.js";
+import { decodeTagInString } from "../utils/regExp.js";
 import { findTimeoutValidator } from "../validation/validateWordFindTimeout.js";
 import { ERROR_MESSAGES } from "../constants/ErrorMessages.js";
 
@@ -71,8 +71,8 @@ export default class InitialQuizModel {
 
     static getDefinitionHint() {
         const definition = this.#randomItem.sense[0].definition;
-        // 정규식으로 문자열 안 태그 제거 
-        const cleanDefinition = deleteTagInString(definition);
+        // 문자열 안 태그 decode
+        const cleanDefinition = decodeTagInString(definition);
         return cleanDefinition;
     }
 
@@ -81,12 +81,13 @@ export default class InitialQuizModel {
         return result;
     }
 
+    // 제시어 정보 추출 
     static getWordInfo() {
         const word = this.#randomItem.word;
         const pos = this.#randomItem.sense[0].pos;
         const definition = this.#randomItem.sense[0].definition;
-        // 정규식으로 문자열 안 태그 제거 
-        const cleanDefinition = deleteTagInString(definition);
+        // 문자열 안 태그 decode
+        const cleanDefinition = decodeTagInString(definition);
 
         return {word, pos, cleanDefinition};
     }

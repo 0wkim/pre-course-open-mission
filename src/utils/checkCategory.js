@@ -3,11 +3,7 @@ export function checkCategory(targetItem, result) {
         targetItem = result[0];
     }
 
-    let targetSense = targetItem.sense.find(s => s.cat === "");
-
-    if (!targetSense) {
-        targetSense = targetItem.sense[0];
-    }
+    const targetSense = targetItem.sense[0];
 
     if (!targetSense.cat || targetSense.cat.trim() === "") {
         targetSense.cat = "일반"

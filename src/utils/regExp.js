@@ -1,6 +1,6 @@
 import he from "he";
 
-export function deleteTagInString(string) {
+export function decodeTagInString(string) {
     const decode = he.decode(string);
     return decode;
 }
