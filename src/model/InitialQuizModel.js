@@ -4,7 +4,7 @@ import { findTimeoutValidator } from "../validation/validateWordFindTimeout.js";
 import { ERROR_MESSAGES } from "../constants/ErrorMessages.js";
 
 export default class InitialQuizModel {
-    static #deleteHypenRandomWord = "";
+    static #randomWord = "";
     static #items = [];
     static #randomItem;
     
@@ -28,8 +28,8 @@ export default class InitialQuizModel {
                 this.#randomItem = this.#items[randomIndex];
                 const randomWord = this.#randomItem.word;
 
-                this.#deleteHypenRandomWord = randomWord.replace("-", "");
-                return this.#deleteHypenRandomWord;
+                this.#randomWord = randomWord.replace("-", "");
+                return this.#randomWord;
             } catch (error) {
                 continue;
             }
@@ -38,7 +38,7 @@ export default class InitialQuizModel {
 
     static async chooseTwoCharWord() {
         const validator = findTimeoutValidator();
-        let word = this.#deleteHypenRandomWord;
+        let word = this.#randomWord;
 
         // 두 글자 단어만 허용 
         while (!(word && word.length === 2)) {
@@ -65,7 +65,7 @@ export default class InitialQuizModel {
     }
 
     static getFirstLetterHint() {
-        const firstLetter = this.#deleteHypenRandomWord[0];
+        const firstLetter = this.#randomWord[0];
         return firstLetter;
     }
 
