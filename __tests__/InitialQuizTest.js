@@ -62,7 +62,7 @@ describe("초성 퀴즈 : 제시어 생성 테스트", () => {
         const word = "사과";
         const expected = "\u1109\u1100";
 
-        const result = InitialQuizModel.getRandomWordInitial(word);
+        const result = InitialQuizModel.getWordInitial(word);
         expect(result).toBe(expected);
     });
 });

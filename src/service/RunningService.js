@@ -1,5 +1,6 @@
 import { oneTimeTimer, iterateTimer } from "../utils/timer.js";
 import InitialQuizModel from "../model/InitialQuizModel.js";
+import { ERROR_MESSAGES } from "../constants/ErrorMessages.js";
 
 export default class RunningService {
     static running(readLine, callback) {
@@ -88,7 +89,7 @@ export default class RunningService {
 
             if ((answer.trim()).length === 0) {
                 state.callback("retry", {
-                    message: "아무것도 입력하지 않았습니다. 다시 입력해주세요."
+                    message: ERROR_MESSAGES.ERROR_NO_INPUT
                 });
                 state.readLine.prompt(true);
                 return;

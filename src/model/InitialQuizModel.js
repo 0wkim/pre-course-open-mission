@@ -58,7 +58,7 @@ export default class InitialQuizModel {
          // 두 글자 단어만 허용 
         while (!(word && word.length === 2)) {
             if (validator.isTimeout()) {
-                console.warn(ERROR_MESSAGES.ERROR_TIMEOUT_THREE_MIN);
+                console.warn(`[ERROR] ${ERROR_MESSAGES.ERROR_TIMEOUT_THREE_MIN}`);
                 return null;
             }
             word = await this.#getRandomWord();
@@ -66,7 +66,7 @@ export default class InitialQuizModel {
         return word;
     }
 
-    static getRandomWordInitial(word) {
+    static getWordInitial(word) {
         let initialWord = "";
 
         for (let i = 0; i < word.length; i++) {
@@ -91,7 +91,12 @@ export default class InitialQuizModel {
         return cleanDefinition;
     }
 
-    static async checkAnswer(inputWord) {
+    static async checkAnswer(inputWord, randomWordInitial) {
+        const inputWordInitial = this.getWordInitial(inputWord);
+        if (inputWordInitial !== randomWordInitial) {
+            return [];
+        }
+
         const result = await fetchWords(inputWord);
         return result;
     }

@@ -9,6 +9,8 @@ import FinishQuizView from "../view/FinishQuizView.js";
 import RunningService from "../service/RunningService.js";
 
 export default class InitialQuizController {
+    #randomWordInitial = "";
+
     async run() {
         const randomInitial = await this.#startPhase();
         const userInputWord = await this.#runningPhase(randomInitial);
@@ -19,7 +21,8 @@ export default class InitialQuizController {
         const findInitialTimer = InitialQuizView.findingInitialMessage();
 
         const randomWord = await InitialQuizModel.chooseTwoCharWord();
-        const randomInitial = InitialQuizModel.getRandomWordInitial(randomWord);
+        const randomInitial = InitialQuizModel.getWordInitial(randomWord);
+        this.#randomWordInitial = randomInitial;
 
         InitialQuizView.completeFindingMessage(findInitialTimer);
 
@@ -57,7 +60,7 @@ export default class InitialQuizController {
     }
 
     async #endPhase(userInputWord) {
-        const result = await InitialQuizModel.checkAnswer(userInputWord);
+        const result = await InitialQuizModel.checkAnswer(userInputWord, this.#randomWordInitial);
         const randomWordInfo = InitialQuizModel.getWordInfo();
         
         if (Array.isArray(result) && result.length > 0) {
