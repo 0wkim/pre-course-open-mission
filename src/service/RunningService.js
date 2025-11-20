@@ -15,7 +15,6 @@ export default class RunningService {
         state.timers.countdown = this.#countdownTime(state);
         state.timers.hint1 = this.#firstHint(state);
         state.timers.hint2 = this.#secondHint(state);
-        state.timers.timeout = this.#timeout(state);
 
         this.#userInput(state);
     }
@@ -28,7 +27,6 @@ export default class RunningService {
         clearInterval(timers.countdown);
         clearTimeout(timers.hint1);
         clearTimeout(timers.hint2);
-        clearTimeout(timers.timeout);
     }
 
     static #countdownTime(state) {
@@ -41,7 +39,7 @@ export default class RunningService {
 
             state.callback("updateTime", {time: state.time});
 
-            if (state.time < 0) {
+            if (state.time === 0) {
                 state.answerArrived = true;
                 return state.callback("finish", {answer: null, timers: state.timers});
             }
@@ -67,17 +65,6 @@ export default class RunningService {
 
             const hint2 = InitialQuizModel.getDefinitionHint();
             state.callback("showHint2", {hint2});
-        });
-    } 
-
-    static #timeout(state) {
-        return oneTimeTimer(30000, () => {
-            if (state.answerArrived) {
-                return;
-            }
-
-            state.answerArrived = true;
-            state.callback("finish", {answer: null, timers: state.timers});
         });
     } 
 

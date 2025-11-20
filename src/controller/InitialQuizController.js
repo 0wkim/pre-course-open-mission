@@ -60,12 +60,20 @@ export default class InitialQuizController {
     }
 
     async #endPhase(userInputWord) {
+        // 실패 : 시간 초과 혹은 미응답
+        if (userInputWord === null) {
+            const randomWordInfo = InitialQuizModel.getWordInfo();
+            return FinishQuizView.showIncorrect(randomWordInfo);
+        }
+
         const result = await InitialQuizModel.checkAnswer(userInputWord, this.#randomWordInitial);
         const randomWordInfo = InitialQuizModel.getWordInfo();
-        
+
         if (Array.isArray(result) && result.length > 0) {
             return FinishQuizView.showCorrect(result);
         }
+
+        // 실패 : 입력했지만, 초성이 맞지 않는 경우 
         return FinishQuizView.showIncorrect(randomWordInfo);
     }
 }
