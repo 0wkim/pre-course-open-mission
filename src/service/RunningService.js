@@ -5,11 +5,11 @@ import { ERROR_MESSAGES } from "../constants/ErrorMessages.js";
 export default class RunningService {
     static running(readLine, callback) {
         const state = {
-            time: 30,
-            answerArrived: false,
-            readLine,
-            callback,
-            timers: {},
+            time: 30,                 // 남은 시간
+            answerArrived: false,     // 정답 도착 여부
+            readLine,                 // 입력 스트림
+            callback,                 // Controller가 넘겨준 callback 함수
+            timers: {},               // 타이머 해들 저장 
         };
 
         state.timers.countdown = this.#countdownTime(state);

@@ -55,7 +55,7 @@ export default class InitialQuizModel {
     static async #tryGetTwoCharWord(validator) {
         let word = this.#randomWord;
 
-         // 두 글자 단어만 허용 
+        // 두 글자 단어만 허용 
         while (!(word && word.length === 2)) {
             if (validator.isTimeout()) {
                 console.warn(`[ERROR] ${ERROR_MESSAGES.ERROR_TIMEOUT_THREE_MIN}`);
