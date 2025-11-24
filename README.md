@@ -226,8 +226,8 @@ src
 
 <br/>
 
-## RunnungService 로직 설명
-- 🔗 [RunningService 상세 문서 (Notion)] (https://www.notion.so/2b4645a19c0080d8a6e4caf09a85d021?source=copy_link)
+## RunningService 로직 설명
+🔗 RunningService 상세 문서 (Notion) : https://www.notion.so/2b4645a19c0080d8a6e4caf09a85d021?source=copy_link
 
 <br/>
 
